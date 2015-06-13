@@ -3,7 +3,7 @@
 
 A Ruby library of functions to access and manipulate hash data structures.
 
-[![Build Status](https://travis-ci.org/rchampourlier/hash_op?branch=master)](https://travis-ci.org/rchampourlier/hash_op)
+[![Build Status](https://travis-ci.org/rchampourlier/hash_op.svg?branch=master)](https://travis-ci.org/rchampourlier/hash_op)
 [![Code Climate](https://codeclimate.com/github/rchampourlier/hash_op/badges/gpa.svg)](https://codeclimate.com/github/rchampourlier/hash_op)
 [![Coverage Status](https://coveralls.io/repos/rchampourlier/hash_op/badge.svg)](https://coveralls.io/r/rchampourlier/hash_op)
 
