@@ -1,6 +1,11 @@
 # HashOp
 
+
 A Ruby library of functions to access and manipulate hash data structures.
+
+[![Build Status](https://travis-ci.org/travis-ci/travis-web.svg?branch=master)](https://travis-ci.org/travis-ci/travis-web)
+[![Code Climate](https://codeclimate.com/github/rchampourlier/hash_op/badges/gpa.svg)](https://codeclimate.com/github/rchampourlier/hash_op)
+[![Coverage Status](https://coveralls.io/repos/rchampourlier/hash_op/badge.svg)](https://coveralls.io/r/rchampourlier/hash_op)
 
 ## Installation
 
