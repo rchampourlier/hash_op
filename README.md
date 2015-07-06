@@ -44,6 +44,76 @@ HashOp::DeepAccess.merge({ a: { b: { c: 1 } } }, :'a.b.c', 2)
   }
 }
 ```
+
+### Mapping
+
+```ruby
+hash = {a: { b: { c: 1 } } }
+mapping = { r: { path: :'a.b.c' } }
+HashOp::Mapping.apply_mapping(hash, mapping)
+=> {
+  :r => 1
+}
+
+hash = {
+  raw: { deep: 'raw_value' },
+  time: '2015-07-06 03:37:13 +0200',
+  mapped_hash: {
+    raw: { deep: 'deep_raw_value' },
+    time: '2014-07-06 03:37:13 +0200'
+  },
+  parseable_string: 'a=1;b=2;t=2013-07-06 03:37:13 +0200',
+  array: [
+    '2015-07-06 03:37:13 +0200',
+    '2014-07-06 03:37:13 +0200',
+    '2013-07-06 03:37:13 +0200'
+  ]
+}
+mapping = {
+  raw: { path: :'raw.deep' },
+  time: { path: :time, type: :time },
+  raw_from_mapped_hash: {
+    path: :'mapped_hash.raw.deep',
+  },
+  time_from_mapped_hash: {
+    path: :'mapped_hash.time',
+    type: :time
+  },
+  values_from_parseable_string: {
+    path: :parseable_string,
+    type: :parseable_string,
+    parsing_mapping: {
+      value: { regexp: 'a=(\d)+;' },
+      time: {
+        regexp: 't=(.*)$',
+        type: :time
+      }
+    }
+  },
+  times_from_array: {
+    type: :array,
+    path: :array,
+    item_mapping: { type: :time }
+  }
+}
+HashOp::Mapping.apply_mapping(hash, mapping)
+=> {
+                           :raw => "raw_value",
+          :raw_from_mapped_hash => "deep_raw_value",
+                          :time => 2015-07-06 03:37:13 +0200,
+         :time_from_mapped_hash => 2014-07-06 03:37:13 +0200,
+              :times_from_array => [
+    [0] 2015-07-06 03:37:13 +0200,
+    [1] 2014-07-06 03:37:13 +0200,
+    [2] 2013-07-06 03:37:13 +0200
+  ],
+  :values_from_parseable_string => {
+     :time => 2013-07-06 03:37:13 +0200,
+    :value => "1"
+  }
+}
+```
+
 TODO: complete with other available operations
 
 ## Development
