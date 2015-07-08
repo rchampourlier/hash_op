@@ -7,6 +7,8 @@ module HashOp
     # Filters an array of hashes according to criteria
     # on the values of each hash.
     #
+    # Check the README for examples.
+    #
     # @param [Array] hashes array of hashes to be filtered
     # @param [Hash] criteria the method uses ::match?, see
     #   definition for more details

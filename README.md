@@ -45,6 +45,53 @@ HashOp::DeepAccess.merge({ a: { b: { c: 1 } } }, :'a.b.c', 2)
 }
 ```
 
+### Filter
+
+```ruby
+hashes = [
+  { value: 123, regexp: "itsamatch", proc: "1+1" },
+  { value: 123, regexp: "abcdef", proc: "1+2" },
+  { value: 234, regexp: "abcdef", proc: "1+2" }
+]
+criteria = {
+  path: :value,
+  matching_object: 123
+}
+HashOp::Filter.filter(hashes, { value: 123 })
+=> [
+  [0] {
+      :proc => "1+1",
+    :regexp => "itsamatch",
+     :value => 123
+  },
+  [1] {
+      :proc => "1+2",
+    :regexp => "abcdef",
+     :value => 123
+  }
+]
+HashOp::Filter.filter(hashes, { value: 123, regexp: /match/ })
+=> [
+  [0] {
+      :proc => "1+1",
+    :regexp => "itsamatch",
+     :value => 123
+  }
+]
+HashOp::Filter.filter(hashes, { proc: ->(x) { eval(x) == 2 } })
+=> [
+  [0] {
+      :proc => "1+1",
+    :regexp => "itsamatch",
+     :value => 123
+  }
+]
+
+Internally, `HashOp::Filter::filter` uses 
+`HashOp::Filter::match?(hash, criteria)` which you can
+use too.
+```
+
 ### Mapping
 
 ```ruby
