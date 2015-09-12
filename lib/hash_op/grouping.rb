@@ -1,4 +1,4 @@
-require 'hash_op/deep_access'
+require 'hash_op/deep'
 
 # A module to perform group operations on hashes.
 module HashOp
@@ -10,7 +10,7 @@ module HashOp
     # @return [Hash]
     def group_on_path(hashes, path)
       hashes.inject({}) do |result, hash|
-        value_at_path = HashOp::DeepAccess.fetch(hash, path)
+        value_at_path = HashOp::Deep.fetch(hash, path)
         result[value_at_path] ||= []
         result[value_at_path] << hash
         result

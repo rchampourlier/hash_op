@@ -5,19 +5,19 @@ require 'active_support/all'
 # through a path in the form of 'a.b.c' or an array
 # of segments ['a', 'b', 'c'].
 module HashOp
-  module DeepAccess
+  module Deep
 
     # Examples:
     #     h = {a: {b: {c: 1}}}
-    #     HashOp::DeepAccess.fetch(h, :a) # => {:b=>{:c=>1}}
-    #     HashOp::DeepAccess.fetch(h, :'a.b') # => {:c=>1}
-    #     HashOp::DeepAccess.fetch(h, :'a.b.c') # => 1
-    #     HashOp::DeepAccess.fetch(h, [:a]) # => {:b=>{:c=>1}}
-    #     HashOp::DeepAccess.fetch(h, [:a, :b, :c]) # => 1
-    #     HashOp::DeepAccess.fetch(h, :'b.c.a') # => nil
+    #     HashOp::Deep.fetch(h, :a) # => {:b=>{:c=>1}}
+    #     HashOp::Deep.fetch(h, :'a.b') # => {:c=>1}
+    #     HashOp::Deep.fetch(h, :'a.b.c') # => 1
+    #     HashOp::Deep.fetch(h, [:a]) # => {:b=>{:c=>1}}
+    #     HashOp::Deep.fetch(h, [:a, :b, :c]) # => 1
+    #     HashOp::Deep.fetch(h, :'b.c.a') # => nil
     #
     def fetch(hash, path)
-      raise 'First argument must be an Hash' unless hash.is_a? Hash
+      fail ArgumentError, 'First argument must be an Hash' unless hash.is_a?(Hash)
       if path.class.in? [String, Symbol]
         fetch_with_deep_key(hash, path)
       elsif path.is_a? Array
@@ -28,8 +28,16 @@ module HashOp
     end
     module_function :fetch
 
+    # Examples:
+    #   h = {}
+    #   h = HashOp::Deep.merge(h, :a, 1)
+    #   => { :a => 1 }
+    #   h = HashOp::Deep.merge(h, :'a.b', 2)
+    #   => { :a => { :b => 2 }
+    #   h = HashOp::Deep.merge(h, :b, 3)
+    #   => { :a => { :b => 2 }, :b => 3 }
     def merge(hash, path, value)
-      raise 'First argument must be an Hash' unless hash.is_a? Hash
+      fail ArgumentError, 'First argument must be an Hash' unless hash.is_a? Hash
       if path.class.in? [String, Symbol]
         merge_with_deep_key(hash, path, value)
       elsif path.is_a? Array
@@ -42,13 +50,13 @@ module HashOp
 
     # Example:
     #   hash = { a: { :b => 1, 'c' => 2 }, d: 0 }
-    #   HashOp::DeepAccess.deep_paths(hash)
+    #   HashOp::Deep.paths(hash)
     #   => [[:a, :b], [:a, 'c' ], [:d]]
-    def deep_paths(hash)
+    def paths(hash)
       r = []
       hash.each do |key, value|
         if value.is_a?(Hash)
-          deep_paths(value).each do |deep_key|
+          paths(value).each do |deep_key|
             r << [key] + Array(deep_key)
           end
         else r << Array(key)
@@ -56,7 +64,7 @@ module HashOp
       end
       r.uniq
     end
-    module_function :deep_paths
+    module_function :paths
 
     private
 

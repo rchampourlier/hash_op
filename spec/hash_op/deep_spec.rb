@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'hash_op/deep_access'
+require 'hash_op/deep'
 
-describe HashOp::DeepAccess do
+describe HashOp::Deep do
 
   describe '::fetch(hash, path)' do
     subject { described_class.fetch(hash, path) }
@@ -112,10 +112,10 @@ describe HashOp::DeepAccess do
     end
   end
 
-  describe '::deep_paths(hash)' do
+  describe '::paths(hash)' do
     it 'returns the deep keys combinations' do
       hash = { a: { :b => 1, 'c' => 2 }, d: 0 }
-      result = HashOp::DeepAccess.deep_paths(hash)
+      result = HashOp::Deep.paths(hash)
       expect(result).to eq([[:a, :b], [:a, 'c'], [:d]])
     end
   end

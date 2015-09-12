@@ -1,4 +1,4 @@
-require 'hash_op/deep_access'
+require 'hash_op/deep'
 
 # A module to perform mapping from hash to hash.
 module HashOp
@@ -53,7 +53,7 @@ module HashOp
         mapping_item = mapping[key]
         path = mapping_item[:path]
         raise "path not found in mapping item #{mapping_item}" if path.nil?
-        raw = HashOp::DeepAccess.fetch(hash, path)
+        raw = HashOp::Deep.fetch(hash, path)
         processed = process_with_mapping_item(raw, mapping_item)
         mapped_hash[key] = processed
         mapped_hash

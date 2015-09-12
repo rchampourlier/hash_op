@@ -1,4 +1,4 @@
-require 'hash_op/deep_access'
+require 'hash_op/deep'
 
 # A set of functions to perform mathematical operations
 # on Hashes.
@@ -76,7 +76,7 @@ module HashOp
     #
     def sum_at_path(hashes, path, zero = 0)
       hashes.inject(zero) do |sum, hash|
-        value = HashOp::DeepAccess.fetch(hash, path) || zero
+        value = HashOp::Deep.fetch(hash, path) || zero
         sum + value
       end
     end
@@ -85,14 +85,14 @@ module HashOp
     # @param [Array] hashes array of Hash
     # @param [String, Symbol] path to deep value in each hash
     def deep_min(hashes, path)
-      hashes.map { |hash| HashOp::DeepAccess.fetch hash, path }.min
+      hashes.map { |hash| HashOp::Deep.fetch hash, path }.min
     end
     module_function :deep_min
 
     # @param [Array] hashes array of Hash
     # @param [String, Symbol] path to deep value in each hash
     def deep_max(hashes, path)
-      hashes.map { |hash| HashOp::DeepAccess.fetch hash, path }.max
+      hashes.map { |hash| HashOp::Deep.fetch hash, path }.max
     end
     module_function :deep_max
   end

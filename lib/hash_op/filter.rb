@@ -1,4 +1,4 @@
-require 'hash_op/deep_access'
+require 'hash_op/deep'
 
 # Performs filtering operation on hash or array of hashes
 module HashOp
@@ -26,17 +26,17 @@ module HashOp
     # @param [Hash] hash the hash to be filtered
     # @param [String, Symbol] the path of the array of hashes
     #   inside hash to be filtered. Accessed through
-    #   HashOp::DeepAccess (path like 'path.to.some.key').
+    #   HashOp::Deep (path like 'path.to.some.key').
     # @param [Hash] criteria to filter on (performed through
     #   ::filter, so see the method for more details)
     # @return [Hash] the hash with values in array at path
     #   filtered according to criteria
     def filter_deep(hash, path, criteria = {})
-      array = HashOp::DeepAccess.fetch hash, path
+      array = HashOp::Deep.fetch hash, path
       raise "Can\'t filter hash at path \"#{path}\", value is not an array" unless array.is_a?(Array)
 
       filtered_array = filter(array, criteria)
-      HashOp::DeepAccess.merge hash, path, filtered_array
+      HashOp::Deep.merge hash, path, filtered_array
     end
     module_function :filter_deep
 
@@ -45,7 +45,7 @@ module HashOp
     #   each criteria is an hash
     #   { path => matching_object }, where:
     #     - path [String, Symbol] is used to access the value
-    #       in the filtered object (through HashOp::DeepAccess::fetch)
+    #       in the filtered object (through HashOp::Deep::fetch)
     #     - matching_object [Object] the object defining the
     #       match:
     #       * a Proc which will be called with the value and
@@ -60,8 +60,7 @@ module HashOp
       return true if criteria.blank?
 
       criteria.map do |path, matching_object|
-        value = HashOp::DeepAccess.fetch(hash, path)
-
+        value = HashOp::Deep.fetch(hash, path)
         case
 
         when matching_object.is_a?(Proc)
