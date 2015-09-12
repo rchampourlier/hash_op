@@ -87,7 +87,7 @@ HashOp::Filter.filter(hashes, { proc: ->(x) { eval(x) == 2 } })
   }
 ]
 
-Internally, `HashOp::Filter::filter` uses 
+Internally, `HashOp::Filter::filter` uses
 `HashOp::Filter::match?(hash, criteria)` which you can
 use too.
 ```
@@ -157,6 +157,146 @@ HashOp::Mapping.apply_mapping(hash, mapping)
   :values_from_parseable_string => {
      :time => 2013-07-06 03:37:13 +0200,
     :value => "1"
+  }
+}
+```
+
+### Grouping
+
+```ruby
+hashes = [
+  {
+    grouping_path: 'A',
+    value: 1,
+    node: { 'deep_grouping_path': 'AA' }
+  },
+  {
+    grouping_path: 'B',
+    value: 2,
+    node: { 'deep_grouping_path': 'BB' }
+  },
+  {
+    grouping_path: 'A',
+    value: 3,
+    node: { 'deep_grouping_path': 'AB' }
+  },
+  {
+    grouping_path: 'A',
+    value: 4,
+    node: { 'deep_grouping_path': 'AA' }
+  }
+]
+HashOp::Grouping.group_on_path(hashes, :grouping_path)
+=> {
+  "A" => [
+    [0] {
+      :grouping_path => "A",
+               :node => {
+        :deep_grouping_path => "AA"
+      },
+              :value => 1
+    },
+    [1] {
+      :grouping_path => "A",
+               :node => {
+        :deep_grouping_path => "AB"
+      },
+              :value => 3
+    },
+    [2] {
+      :grouping_path => "A",
+               :node => {
+        :deep_grouping_path => "AA"
+      },
+              :value => 4
+    }
+  ],
+  "B" => [
+    [0] {
+      :grouping_path => "B",
+               :node => {
+        :deep_grouping_path => "BB"
+      },
+              :value => 2
+    }
+  ]
+}
+HashOp::Grouping.group_on_path(hashes, :'node.deep_grouping_path')
+=> {
+  "AA" => [
+    [0] {
+      :grouping_path => "A",
+               :node => {
+        :deep_grouping_path => "AA"
+      },
+              :value => 1
+    },
+    [1] {
+      :grouping_path => "A",
+               :node => {
+        :deep_grouping_path => "AA"
+      },
+              :value => 4
+    }
+  ],
+  "AB" => [
+    [0] {
+      :grouping_path => "A",
+               :node => {
+        :deep_grouping_path => "AB"
+      },
+              :value => 3
+    }
+  ],
+  "BB" => [
+    [0] {
+      :grouping_path => "B",
+               :node => {
+        :deep_grouping_path => "BB"
+      },
+              :value => 2
+    }
+  ]
+}
+HashOp::Grouping.group_on_paths(hashes, [:grouping_path, :'node.deep_grouping_path'])
+=> {
+  "A" => {
+    "AA" => [
+      [0] {
+        :grouping_path => "A",
+                 :node => {
+          :deep_grouping_path => "AA"
+        },
+                :value => 1
+      },
+      [1] {
+        :grouping_path => "A",
+                 :node => {
+          :deep_grouping_path => "AA"
+        },
+                :value => 4
+      }
+    ],
+    "AB" => [
+      [0] {
+        :grouping_path => "A",
+                 :node => {
+          :deep_grouping_path => "AB"
+        },
+                :value => 3
+      }
+    ]
+  },
+  "B" => {
+    "BB" => [
+      [0] {
+        :grouping_path => "B",
+                 :node => {
+          :deep_grouping_path => "BB"
+        },
+                :value => 2
+      }
+    ]
   }
 }
 ```
