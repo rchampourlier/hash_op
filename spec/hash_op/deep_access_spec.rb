@@ -3,10 +3,10 @@ require 'hash_op/deep_access'
 
 describe HashOp::DeepAccess do
 
-  describe '::fetch' do
+  describe '::fetch(hash, path)' do
+    subject { described_class.fetch(hash, path) }
 
     context 'simple fetch' do
-
       let(:hash) do
         {
           a: { b: { c: 1 } },
@@ -16,15 +16,13 @@ describe HashOp::DeepAccess do
 
       context 'non-matching path' do
         let(:path) { 'b.c.a' }
-        subject { described_class.fetch(hash, path) }
-
         it { should be_nil }
       end
 
       context 'Symbol key' do
+        let(:path) { :'a.b.c' }
         it 'should fetch the value' do
-          result = described_class.fetch(hash, :'a.b.c')
-          expect(result).to eq 1
+          expect(subject).to eq 1
         end
       end
 
@@ -37,7 +35,6 @@ describe HashOp::DeepAccess do
     end
 
     context 'fetch on array of hashes' do
-
       let(:hash) do
         {
           a: [
@@ -47,10 +44,19 @@ describe HashOp::DeepAccess do
           ]
         }
       end
+      let(:path) { :'a.b' }
 
-      it 'should return the array of values' do
-        result = described_class.fetch(hash, :'a.b')
-        expect(result).to eq [1, 2, 3]
+      it 'returns the array of values' do
+        expect(subject).to eq [1, 2, 3]
+      end
+    end
+
+    context 'path as an array' do
+      let(:path) { [:a, 'b'] }
+      let(:hash) { { a: { 'b' => 1 }, c: 2 } }
+
+      it 'returns the expected value' do
+        expect(subject)
       end
     end
   end
@@ -103,6 +109,14 @@ describe HashOp::DeepAccess do
       expect(result).to eq(
         { a: [ :b, :c ] }
       )
+    end
+  end
+
+  describe '::deep_paths(hash)' do
+    it 'returns the deep keys combinations' do
+      hash = { a: { :b => 1, 'c' => 2 }, d: 0 }
+      result = HashOp::DeepAccess.deep_paths(hash)
+      expect(result).to eq([[:a, :b], [:a, 'c'], [:d]])
     end
   end
 

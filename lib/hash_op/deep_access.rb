@@ -40,6 +40,24 @@ module HashOp
     end
     module_function :merge
 
+    # Example:
+    #   hash = { a: { :b => 1, 'c' => 2 }, d: 0 }
+    #   HashOp::DeepAccess.deep_paths(hash)
+    #   => [[:a, :b], [:a, 'c' ], [:d]]
+    def deep_paths(hash)
+      r = []
+      hash.each do |key, value|
+        if value.is_a?(Hash)
+          deep_paths(value).each do |deep_key|
+            r << [key] + Array(deep_key)
+          end
+        else r << Array(key)
+        end
+      end
+      r.uniq
+    end
+    module_function :deep_paths
+
     private
 
     def fetch_with_deep_key(hash, deep_key)
