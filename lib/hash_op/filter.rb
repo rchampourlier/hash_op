@@ -56,19 +56,18 @@ module HashOp
     #       * any other value will be matched against the
     #         equality operator.
     def match?(hash, criteria)
-      raise ArgumentError.new('First argument must be an Hash') unless hash.is_a?(Hash)
+      unless hash.is_a?(Hash)
+        fail ArgumentError, 'First argument must be an Hash'
+      end
       return true if criteria.blank?
 
       criteria.map do |path, matching_object|
         value = HashOp::Deep.fetch(hash, path)
         case
-
         when matching_object.is_a?(Proc)
           matching_object.call(value)
-
         when matching_object.is_a?(Regexp)
-          !!(value =~ matching_object)
-
+          (value =~ matching_object).present?
         else value == matching_object
         end
       end.uniq == [true]
