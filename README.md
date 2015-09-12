@@ -27,8 +27,6 @@ Or install it yourself as:
 
 ## Available operations
 
-_See specs for more details on each operation._
-
 ### Deep Access
 
 ```ruby
@@ -301,7 +299,7 @@ HashOp::Grouping.group_on_paths(hashes, [:grouping_path, :'node.deep_grouping_pa
 }
 ```
 
-TODO: complete with other available operations
+_See specs for more details on each operation and operations not documented here._
 
 ## Development
 
