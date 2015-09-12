@@ -30,10 +30,10 @@ Or install it yourself as:
 ### Deep Access
 
 ```ruby
-HashOp::DeepAccess.fetch({a: {b: {c: 1}}}, :'a.b.c')
+HashOp::Deep.fetch({a: {b: {c: 1}}}, :'a.b.c')
 => 1
 
-HashOp::DeepAccess.merge({ a: { b: { c: 1 } } }, :'a.b.c', 2)
+HashOp::Deep.merge({ a: { b: { c: 1 } } }, :'a.b.c', 2)
 => {
   :a => {
     :b => {
@@ -310,3 +310,15 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/rchampourlier/hash_op. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) [code of conduct](CODE_OF_CONDUCT.md).
+
+## Revisions
+
+### 0.2.0
+
+- Removed some operations that made no real sense (`Math.sum` and `Math.sum_two`).
+- Renamed `DeepAccess` to `Deep`.
+- Renamed `Merge.merge` to `Merge.flat` and `Merge.merge_by_group` to `Merge.by_group`.
+
+### 0.1.0
+
+Initial version
