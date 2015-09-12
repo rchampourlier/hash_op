@@ -5,65 +5,48 @@ require 'hash_op/deep'
 module HashOp
   module Math
 
-    # @param hashes [Array] of Hash instances
-    # @return [Hash] summing values of the same key
-    def sum(*hashes)
-      hashes.flatten!
-      case hashes.length
-      when 0 then {}
-      when 1 then hashes.first
-      when 2 then sum_two(*hashes)
-      else
-        sum(*[sum_two(*hashes[0..1])] + hashes[2..-1])
-      end
-    end
-    module_function :sum
-
-    def sum_two(hash_a, hash_b)
-      hash_b.each do |key, hash_b_value|
-        if hash_a[key]
-          hash_a[key] += hash_b_value
-        else
-          hash_a[key] = hash_b_value
-        end
-      end
-      hash_a
-    end
-    module_function :sum_two
-
     # Sum values in an array of hashes by grouping on a given
     # key.
     #
     # Example:
     #   hashes = [
-    #     { group: :a, value: 1 },
-    #     { group: :a, value: 1 },
-    #     { group: :b, value: 1 }
+    #     { group_1: :a, group_2: :a, value_1: 1, value_2: 1 },
+    #     { group_1: :a, group_2: :b, value_1: 1, value_2: 2 },
+    #     { group_1: :a, group_2: :b, value_1: 1, value_2: 2 },
+    #     { group_1: :b, group_2: :c, value_1: 1, value_2: 3 }
     #   ]
-    #   HashOp::Math.sum_on_groups(hashes, :group, :value)
-    #   # => [
-    #   #   { group: :a, value: 2 },
-    #   #   { group: :b, value: 1 }
-    #   # ]
+    #   HashOp::Math.sum_on_groups(hashes,
+    #     [:group_1], [:value_1, :value_2]
+    #   )
+    #   => [
+    #     { group_1: :a, value_1: 3, value_2: 5 },
+    #     { group_1: :b, value_1: 1, value_2: 3 }
+    #   ]
+    #   HashOp::Math.sum_on_groups(hashes,
+    #     [:group_1, :group_2], [:value_1, :value_2]
+    #   )
+    #   => [
+    #     { group_1: :a, group_2: :a, value_1: 1, value_2: 1 },
+    #     { group_1: :a, group_2: :b, value_1: 2, value_2: 4 },
+    #     { group_1: :b, group_2: :c, value_1: 1, value_2: 3 }
+    #   ]
     #
     # @param hashes [Array] the hashes to be summed
     # @param group_key [Object] the key to use to group items on
     # @param value_key [Object] the key of the values to sum
     # @return [Array]
-    def sum_on_groups(hashes, group_key, value_key)
-      work_hash = hashes.inject({}) do |work, hash|
-        if work[hash[group_key]].nil?
-          work[hash[group_key]] = {
-            group_key => hash[group_key],
-            value_key => hash[value_key]
-          }
-        else
-          work[hash[group_key]][value_key] += hash[value_key]
+    def sum_on_groups(hashes, grouping_paths, value_paths)
+      grouped_hashes = Grouping.group_on_paths(hashes, grouping_paths)
+      group_paths = Deep.paths(grouped_hashes)
+      result = group_paths.map do |group_path|
+        group_hashes = HashOp::Deep.fetch(grouped_hashes, group_path)
+        group_values = value_paths.map do |value_path|
+          group_value = HashOp::Math.sum_at_path(group_hashes, value_path)
+          { value_path => group_value }
         end
-        work
+        Hash[[grouping_paths, group_path].transpose].merge(Merge.flat(group_values))
       end
-      work_hash.values
-    end
+  end
     module_function :sum_on_groups
 
     # Sum values for the specified hashes at the specified path.

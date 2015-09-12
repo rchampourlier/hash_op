@@ -3,63 +3,38 @@ require 'hash_op/math'
 
 describe HashOp::Math do
 
-  describe '::sum' do
-
-    context '1-level integer-valued hashes' do
-      context 'only' do
-        it 'should return the correct hash' do
-          summed_hashes = [
-            {a: 1, b: 2},
-            {a: 1, c: 3},
-            {b: 2, d: 4}
-          ]
-          expected_result = {a: 2, b: 4, c:3, d: 4}
-          result = described_class.sum(*summed_hashes)
-          expect(result).to eq expected_result
-        end
-      end
-      context 'and empty hashes' do
-        it 'should return the correct hash' do
-          summed_hashes = [
-            {a: 1, b: 2},
-            {},
-            {b: 1, c: 3}
-          ]
-          expected_result = {a: 1, b: 3, c: 3}
-          result = described_class.sum(*summed_hashes)
-          expect(result).to eq expected_result
-        end
-      end
-    end
-  end
-
-  describe '::sum_two' do
-    it 'should sum two 1-level hashes with integer values' do
-      expected_result = {a: 2, b: 2, c:3}
-      result = described_class.sum_two({a: 1, b: 2}, {a: 1, c: 3})
-      expect(result).to eq expected_result
-    end
-  end
-
   describe '::sum_on_groups' do
 
     let(:hashes) do
       [
-        { group: :a, value: 1 },
-        { group: :b, value: 'a' },
-        { group: :c, value: [] },
-        { group: :a, value: 1 },
-        { group: :b, value: 'b' }
+        { group_1: :a, group_2: :a, value_1: 1, value_2: 1 },
+        { group_1: :a, group_2: :b, value_1: 1, value_2: 2 },
+        { group_1: :a, group_2: :b, value_1: 1, value_2: 2 },
+        { group_1: :b, group_2: :c, value_1: 1, value_2: 3 }
       ]
     end
+    let(:value_paths) { [:value_1, :value_2] }
+    subject { described_class.sum_on_groups(hashes, grouping_paths, value_paths) }
 
-    it 'should return an Hash with sums on the :group key' do
-      result = described_class.sum_on_groups(hashes, :group, :value)
-      expect(result).to eq([
-        { group: :a, value: 2 },
-        { group: :b, value: 'ab' },
-        { group: :c, value: [] }
-      ])
+    context 'single-level grouping paths' do
+      let(:grouping_paths) { [:group_1] }
+      it 'returns hashes with sums on the specified values for each group' do
+        expect(subject).to eq([
+          { group_1: :a, value_1: 3, value_2: 5 },
+          { group_1: :b, value_1: 1, value_2: 3 }
+        ])
+      end
+    end
+
+    context '2-level grouping paths' do
+      let(:grouping_paths) { [:group_1, :group_2] }
+      it 'returns hashes with sums on the specified values for each group' do
+        expect(subject).to eq([
+          { group_1: :a, group_2: :a, value_1: 1, value_2: 1 },
+          { group_1: :a, group_2: :b, value_1: 2, value_2: 4 },
+          { group_1: :b, group_2: :c, value_1: 1, value_2: 3 }
+        ])
+      end
     end
   end
 
