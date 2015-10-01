@@ -313,6 +313,11 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/rchamp
 
 ## Revisions
 
+### 0.3.0
+
+- Added `Read.values_at_path`
+- Minor fixes
+
 ### 0.2.0
 
 - Removed some operations that made no real sense (`Math.sum` and `Math.sum_two`).
