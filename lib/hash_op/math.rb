@@ -1,4 +1,6 @@
 require 'hash_op/deep'
+require 'hash_op/grouping'
+require 'hash_op/merge'
 
 # A set of functions to perform mathematical operations
 # on Hashes.
