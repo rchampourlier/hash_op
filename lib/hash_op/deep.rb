@@ -17,13 +17,13 @@ module HashOp
     #     HashOp::Deep.fetch(h, :'b.c.a') # => nil
     #
     def fetch(hash, path)
-      fail ArgumentError, 'First argument must be an Hash' unless hash.is_a?(Hash)
+      fail ArgumentError, "First argument must be an Hash (was #{hash})" unless hash.is_a?(Hash)
       if path.class.in? [String, Symbol]
         fetch_with_deep_key(hash, path)
       elsif path.is_a? Array
         fetch_with_segments(hash, path)
       else
-        raise 'Invalid attribute, must be a String or an Array'
+        fail ArgumentError, 'Invalid attribute, must be a String or an Array'
       end
     end
     module_function :fetch

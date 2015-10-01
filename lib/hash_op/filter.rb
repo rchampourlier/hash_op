@@ -7,7 +7,28 @@ module HashOp
     # Filters an array of hashes according to criteria
     # on the values of each hash.
     #
-    # Check the README for examples.
+    # Example:
+    #
+    # ```ruby
+    # hashes = [
+    #   { value: 123, regexp: "itsamatch", proc: "1+1" },
+    #   { value: 123, regexp: "abcdef", proc: "1+2" },
+    #   { value: 234, regexp: "abcdef", proc: "1+2" }
+    # ]
+    # HashOp::Filter.filter(hashes, { value: 123 })
+    # => [
+    #   [0] {
+    #       :proc => "1+1",
+    #     :regexp => "itsamatch",
+    #      :value => 123
+    #   },
+    #   [1] {
+    #       :proc => "1+2",
+    #     :regexp => "abcdef",
+    #      :value => 123
+    #   }
+    # ]
+    # ```
     #
     # @param [Array] hashes array of hashes to be filtered
     # @param [Hash] criteria the method uses ::match?, see

@@ -1,5 +1,6 @@
-require "hash_op/version"
+require 'hash_op/version'
 
+# Namespacing module
 module HashOp
 end
 
