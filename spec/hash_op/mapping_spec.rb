@@ -53,19 +53,22 @@ describe HashOp::Mapping do
     end
 
     it 'should correctly perform the complete mapping' do
+      seconds = 1
+      days = 60 * 60 * 24
+      years = 365.25 * days
       value = {
         root: {
-          integer: rand(100000),
+          integer: rand(100_000),
           string: 'some string',
           deep_1: {
             deep_2: {
-              time: rand(10).days.ago.to_s
+              time: (Time.now - rand(10) * days).to_s
             }
           },
           mapped_hash: {
             root: {
               string: 'mapped hash string',
-              time: rand(10).years.from_now.to_s
+              time: (Time.now + rand(10) * years).to_s
             }
           },
           array_of_strings: [
@@ -77,7 +80,7 @@ describe HashOp::Mapping do
               root: {
                 string: 'some mapped string 1',
                 deep_1: {
-                  time: rand(10).seconds.ago.to_s
+                  time: (Time.now - rand(10) * seconds).to_s
                 }
               }
             },
@@ -85,7 +88,7 @@ describe HashOp::Mapping do
               root: {
                 string: 'some mapped string 2',
                 deep_1: {
-                  time: rand(10).seconds.ago.to_s
+                  time: (Time.now - rand(10) * seconds).to_s
                 }
               }
             }
@@ -235,10 +238,11 @@ describe HashOp::Mapping do
 
   describe '::process_with_mapping_item_mapped_hash' do
     it 'should return the mapped hash' do
+      years = 60 * 60 * 24 * 365.25
       value = {
         root: {
           string: 'mapped hash string',
-          time: rand(10).years.from_now.to_s
+          time: (Time.now + rand(10) * years).to_s
         }
       }
 
@@ -313,12 +317,13 @@ describe HashOp::Mapping do
     end
 
     it 'should return the correct array of mapped hashes' do
+      seconds = 1
       value = [
         {
           root: {
             string: 'some mapped string 1',
             deep_1: {
-              time: rand(10).seconds.ago.to_s
+              time: (Time.now - rand(10) * seconds).to_s
             }
           }
         },
@@ -326,7 +331,7 @@ describe HashOp::Mapping do
           root: {
             string: 'some mapped string 2',
             deep_1: {
-              time: rand(10).seconds.ago.to_s
+              time: (Time.now - rand(10) * seconds).to_s
             }
           }
         }

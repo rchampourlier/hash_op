@@ -1,4 +1,4 @@
-require 'active_support/all'
+# frozen_string_literal: true
 
 # Provides ::fetch and ::merge methods which allows
 # to perform fetch/merge operations deeply in Hash
@@ -17,13 +17,13 @@ module HashOp
     #     HashOp::Deep.fetch(h, :'b.c.a') # => nil
     #
     def fetch(hash, path)
-      fail ArgumentError, "First argument must be an Hash (was #{hash})" unless hash.is_a?(Hash)
-      if path.class.in? [String, Symbol]
+      raise ArgumentError, "First argument must be an Hash (was #{hash})" unless hash.is_a?(Hash)
+      if [String, Symbol].include?(path.class)
         fetch_with_deep_key(hash, path)
       elsif path.is_a? Array
         fetch_with_segments(hash, path)
       else
-        fail ArgumentError, 'Invalid attribute, must be a String or an Array'
+        raise ArgumentError, 'Invalid attribute, must be a String or an Array'
       end
     end
     module_function :fetch
@@ -37,8 +37,8 @@ module HashOp
     #   h = HashOp::Deep.merge(h, :b, 3)
     #   => { :a => { :b => 2 }, :b => 3 }
     def merge(hash, path, value)
-      fail ArgumentError, 'First argument must be an Hash' unless hash.is_a? Hash
-      if path.class.in? [String, Symbol]
+      raise ArgumentError, 'First argument must be an Hash' unless hash.is_a? Hash
+      if [String, Symbol].include?(path.class)
         merge_with_deep_key(hash, path, value)
       elsif path.is_a? Array
         merge_with_segments(hash, path, value)

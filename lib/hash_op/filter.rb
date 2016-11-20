@@ -80,7 +80,7 @@ module HashOp
       unless hash.is_a?(Hash)
         fail ArgumentError, 'First argument must be an Hash'
       end
-      return true if criteria.blank?
+      return true if criteria.nil? || criteria.empty?
 
       criteria.map do |path, matching_object|
         value = HashOp::Deep.fetch(hash, path)
@@ -88,7 +88,7 @@ module HashOp
         when matching_object.is_a?(Proc)
           matching_object.call(value)
         when matching_object.is_a?(Regexp)
-          (value =~ matching_object).present?
+          !(value =~ matching_object).nil?
         else value == matching_object
         end
       end.uniq == [true]
