@@ -1,4 +1,9 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-# Specify your gem's dependencies in hash_op.gemspec
+# Specify your gem"s dependencies in hash_op.gemspec
 gemspec
+
+group :test do
+  gem "simplecov"
+  gem "codeclimate-test-reporter", "~> 1.0.0"
+end
